@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinemaMax - Book Your Movie Tickets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        .login-btn {
+            background: #ff6b35;
+            color: #fff !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem 0;
+            text-align: center;
+            color: #fff;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 2rem auto 0;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: #ff6b35;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Category Buttons */
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: #fff;
+            color: #333;
+            border: 2px solid #e9ecef;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: #ff6b35;
+            color: #fff;
+            border-color: #ff6b35;
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Login/Signup Page */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: none;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        .auth-tab.active {
+            background: #ff6b35;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6b35;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #ff6b35;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #e55a2b;
+        }
+
+        /* Movie Sections */
+        .movie-section {
+            margin: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #333;
+            border-left: 4px solid #ff6b35;
+            padding-left: 1rem;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .movie-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .rating-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .movie-info {
+            padding: 1.5rem;
+        }
+
+        .movie-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .movie-genre {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .movie-languages {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .language-tag {
+            background: #f8f9fa;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* Movie Details */
+        .movie-detail {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .movie-hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), linear-gradient(45deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .movie-detail-poster {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #333, #555);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .movie-detail-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .movie-meta {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .movie-meta span {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .book-now-btn {
+            background: #ff6b35;
+            color: #fff;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        /* Showtimes */
+        .showtimes-section {
+            padding: 2rem;
+        }
+
+        .date-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .date-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            min-width: 120px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .date-btn.active {
+            background: #ff6b35;
+            color: #fff;
+            border-color: #ff6b35;
+        }
+
+        .theater-section {
+            margin-bottom: 2rem;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .theater-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .theater-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .theater-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .showtime-grid {
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .showtime-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e9ecef;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .showtime-btn:hover {
+            border-color: #ff6b35;
+            color: #ff6b35;
+        }
+
+        .showtime-btn.fast-filling {
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .showtime-btn.almost-full {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .booking-status {
+            font-size: 0.7rem;
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 0.5rem;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+
+        .review-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+        }
+
+        .review-rating {
+            color: #ffa500;
+        }
+
+        /* Cast Section */
+        .cast-section {
+            padding: 2rem;
+        }
+
+        .cast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cast-card {
+            text-align: center;
+        }
+
+        .cast-photo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        /* Seat Selection */
+        .seat-selection-header {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .theater-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .screen {
+            width: 300px;
+            height: 20px;
+            background: #ff6b35;
+            margin: 2rem auto;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .screen::after {
+            content: "SCREEN";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .seats-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .seat-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .seat {
+            width: 35px;
+            height: 35px;
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .seat.selected {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: #fff;
+        }
+
+        .seat.booked {
+            background: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
+            color: #fff;
+        }
+
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-seat {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* Payment Page */
+        .payment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .booking-summary {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .add-ons {
+            margin: 2rem 0;
+        }
+
+        .add-on-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .add-on-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ff6b35;
+            background: #fff;
+            color: #ff6b35;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .payment-methods {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option.active {
+            border-color: #ff6b35;
+            background: #fff5f3;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 1rem;
+        }
+
+        .payment-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Confirmation Page */
+        .confirmation-container {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: #333;
+            margin: 2rem auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .ticket-info {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .movie-hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🎬 CinemaMax</div>
+            <div class="nav-links">
+                <a onclick="showPage('home')">Movies</a>
+                <a onclick="showPage('events')">Events</a>
+                <a onclick="showPage('sports')">Sports</a>
+                <a>Location</a>
+                <a onclick="showPage('login')" class="login-btn">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Login/Signup Page -->
+    <div id="login" class="page active">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-box">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+                        <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+                    </div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" required>
+                        </div>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+
+                    <form id="signupForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" required>
+                        </div>
+                        <button type="submit" class="btn">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home/Movies Page -->
+    <div id="home" class="page">
+        <!-- Search Section -->
+        <div class="search-container">
+            <div class="container">
+                <h1>Book Movie Tickets</h1>
+                <p>Discover and book tickets for the latest movies</p>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search for movies, theaters, events...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Category Buttons -->
+            <div class="category-buttons">
+                <button class="category-btn active" onclick="filterMovies('all')">All Movies</button>
+                <button class="category-btn" onclick="filterMovies('now-showing')">Now Showing</button>
+                <button class="category-btn" onclick="filterMovies('coming-soon')">Coming Soon</button>
+                <button class="category-btn" onclick="filterMovies('streaming')">Streaming</button>
+                <button class="category-btn" onclick="filterMovies('imax')">IMAX</button>
+            </div>
+
+            <!-- Now Showing Section -->
+            <div class="movie-section" id="now-showing-section">
+                <h2 class="section-title">Now Showing</h2>
+                <div class="movies-grid">
+                    <div class="movie-card now-showing imax" onclick="showMovieDetail('Avengers: Endgame')">
+                        <div class="movie-poster">
+                            🦸
+                            <div class="rating-badge">⭐ 8.4</div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">Avengers: Endgame</div>
+                            <div class="movie-genre">Action, Adventure, Sci-Fi</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                                <span class="language-tag">Hindi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card now-showing" onclick="showMovieDetail('The Lion King')">
+                        <div class="movie-poster">
+                            🦁
+                            <div class="rating-badge">⭐ 7.8</div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">The Lion King</div>
+                            <div class="movie-genre">Animation, Family, Drama</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                                <span class="language-tag">Hindi</span>
+                                <span class="language-tag">Tamil</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card now-showing imax" onclick="showMovieDetail('Joker')">
+                        <div class="movie-poster">
+                            🃏
+                            <div class="rating-badge">⭐ 8.9</div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">Joker</div>
+                            <div class="movie-genre">Crime, Drama, Thriller</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card now-showing" onclick="showMovieDetail('Spider-Man')">
+                        <div class="movie-poster">
+                            🕷️
+                            <div class="rating-badge">⭐ 8.1</div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">Spider-Man</div>
+                            <div class="movie-genre">Action, Adventure</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                                <span class="language-tag">Hindi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card now-showing" onclick="showMovieDetail('Fast X')">
+                        <div class="movie-poster">🏎️</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Fast X</div>
+                            <div class="movie-genre">Action, Thriller</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                                <span class="language-tag">Hindi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card now-showing imax" onclick="showMovieDetail('Top Gun: Maverick')">
+                        <div class="movie-poster">✈️</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Top Gun: Maverick</div>
+                            <div class="movie-genre">Action, Drama</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coming Soon Section -->
+            <div class="movie-section" id="coming-soon-section">
+                <h2 class="section-title">Coming Soon</h2>
+                <div class="movies-grid">
+                    <div class="movie-card coming-soon" onclick="showMovieDetail('Guardians of the Galaxy 3')">
+                        <div class="movie-poster">🚀</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Guardians of the Galaxy 3</div>
+                            <div class="movie-genre">Action, Comedy, Sci-Fi</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                                <span class="language-tag">Hindi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card coming-soon">
+                        <div class="movie-poster">🐲</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Dragon Kingdom</div>
+                            <div class="movie-genre">Fantasy, Adventure</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card coming-soon imax">
+                        <div class="movie-poster">🌟</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Star Wars: New Hope</div>
+                            <div class="movie-genre">Sci-Fi, Adventure</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card coming-soon">
+                        <div class="movie-poster">🎭</div>
+                        <div class="movie-info">
+                            <div class="movie-title">The Greatest Showman 2</div>
+                            <div class="movie-genre">Musical, Drama</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Streaming Section -->
+            <div class="movie-section" id="streaming-section">
+                <h2 class="section-title">Now Streaming</h2>
+                <div class="movies-grid">
+                    <div class="movie-card streaming">
+                        <div class="movie-poster">📺</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Stranger Things 5</div>
+                            <div class="movie-genre">Horror, Sci-Fi, Thriller</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card streaming">
+                        <div class="movie-poster">🏠</div>
+                        <div class="movie-info">
+                            <div class="movie-title">House of Cards</div>
+                            <div class="movie-genre">Drama, Political</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card streaming">
+                        <div class="movie-poster">👑</div>
+                        <div class="movie-info">
+                            <div class="movie-title">The Crown Season 6</div>
+                            <div class="movie-genre">Biography, Drama</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card streaming">
+                        <div class="movie-poster">🔥</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Money Heist: Korea</div>
+                            <div class="movie-genre">Crime, Drama</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Korean</span>
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Page -->
+    <div id="events" class="page">
+        <div class="search-container">
+            <div class="container">
+                <h1>Book Event Tickets</h1>
+                <p>Discover concerts, comedy shows, and entertainment events</p>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search for events, venues, artists...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="category-buttons">
+                <button class="category-btn active">All Events</button>
+                <button class="category-btn">Concerts</button>
+                <button class="category-btn">Comedy</button>
+                <button class="category-btn">Theatre</button>
+                <button class="category-btn">Parks</button>
+            </div>
+
+            <!-- Concerts -->
+            <div class="movie-section">
+                <h2 class="section-title">Live Concerts</h2>
+                <div class="movies-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">🎤</div>
+                        <div class="movie-info">
+                            <div class="movie-title">AR Rahman Live</div>
+                            <div class="movie-genre">Music Concert</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Multi-language</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">🎸</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Coldplay World Tour</div>
+                            <div class="movie-genre">Rock Concert</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">🎺</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Jazz Night Live</div>
+                            <div class="movie-genre">Jazz Concert</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Instrumental</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comedy Shows -->
+            <div class="movie-section">
+                <h2 class="section-title">Comedy Shows</h2>
+                <div class="movies-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">😂</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Kapil Sharma Live</div>
+                            <div class="movie-genre">Stand-up Comedy</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Hindi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">🎭</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Kenny Sebastian</div>
+                            <div class="movie-genre">Stand-up Comedy</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parks & Entertainment -->
+            <div class="movie-section">
+                <h2 class="section-title">Parks & Entertainment</h2>
+                <div class="movies-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">🎢</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Wonderla Bangalore</div>
+                            <div class="movie-genre">Amusement Park</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">All Ages</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">🦁</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Bannerghatta Zoo</div>
+                            <div class="movie-genre">Wildlife Park</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Family</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sports Page -->
+    <div id="sports" class="page">
+        <div class="search-container">
+            <div class="container">
+                <h1>Book Sports Tickets</h1>
+                <p>Watch live cricket, football and other sporting events</p>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search for matches, teams, venues...">
+                    <button class="search-btn">🔍</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="category-buttons">
+                <button class="category-btn active">All Sports</button>
+                <button class="category-btn">Cricket</button>
+                <button class="category-btn">Football</button>
+                <button class="category-btn">Basketball</button>
+                <button class="category-btn">Badminton</button>
+            </div>
+
+            <!-- Cricket -->
+            <div class="movie-section">
+                <h2 class="section-title">Cricket Matches</h2>
+                <div class="movies-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">🏏</div>
+                        <div class="movie-info">
+                            <div class="movie-title">India vs Australia</div>
+                            <div class="movie-genre">ODI Cricket</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">M. Chinnaswamy Stadium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">🏏</div>
+                        <div class="movie-info">
+                            <div class="movie-title">RCB vs CSK</div>
+                            <div class="movie-genre">IPL T20</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">M. Chinnaswamy Stadium</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Football -->
+            <div class="movie-section">
+                <h2 class="section-title">Football Matches</h2>
+                <div class="movies-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">⚽</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Bengaluru FC vs Kerala Blasters</div>
+                            <div class="movie-genre">ISL Football</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Kanteerava Stadium</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="movie-card">
+                        <div class="movie-poster">⚽</div>
+                        <div class="movie-info">
+                            <div class="movie-title">Barcelona vs Real Madrid</div>
+                            <div class="movie-genre">El Clasico Live Screening</div>
+                            <div class="movie-languages">
+                                <span class="language-tag">Multiple Venues</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Details Page -->
+    <div id="movieDetail" class="page">
+        <div class="container">
+            <div class="movie-detail">
+                <!-- Movie Hero Section -->
+                <div class="movie-hero">
+                    <div class="movie-detail-poster" id="detailPoster">🦸</div>
+                    <div class="movie-detail-info">
+                        <h2 id="detailTitle">Avengers: Endgame</h2>
+                        <div class="movie-meta">
+                            <span>⭐ 8.4/10</span>
+                            <span>⏱️ 181 min</span>
+                            <span>🎭 PG-13</span>
+                            <span>📅 2019</span>
+                        </div>
+                        <p id="detailSynopsis">The Avengers assemble once more to reverse the damage caused by Thanos and restore balance to the universe.</p>
+                        <button class="book-now-btn" onclick="showBookingSection()">Book Now</button>
+                    </div>
+                </div>
+
+                <!-- Showtimes Section -->
+                <div class="showtimes-section" id="bookingSection" style="display: none;">
+                    <h3>Select Date & Time</h3>
+                    <div class="date-selector">
+                        <div class="date-btn active" onclick="selectDate(this)">
+                            <div>Today</div>
+                            <div>16 Aug</div>
+                        </div>
+                        <div class="date-btn" onclick="selectDate(this)">
+                            <div>Tomorrow</div>
+                            <div>17 Aug</div>
+                        </div>
+                        <div class="date-btn" onclick="selectDate(this)">
+                            <div>Sun</div>
+                            <div>18 Aug</div>
+                        </div>
+                        <div class="date-btn" onclick="selectDate(this)">
+                            <div>Mon</div>
+                            <div>19 Aug</div>
+                        </div>
+                    </div>
+
+                    <!-- Theater 1 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">PVR Cinemas - Phoenix Mall</div>
+                                <div class="theater-info">Dolby Atmos, 4DX Available</div>
+                            </div>
+                            <div class="theater-info">2.5 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('PVR Phoenix', '9:30 AM')">
+                                9:30 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('PVR Phoenix', '10:00 AM')">
+                                10:00 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn fast-filling" onclick="selectTheaterShow('PVR Phoenix', '1:00 PM')">
+                                1:00 PM
+                                <div class="booking-status">Fast Filling</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('PVR Phoenix', '4:00 PM')">
+                                4:00 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn almost-full" onclick="selectTheaterShow('PVR Phoenix', '7:00 PM')">
+                                7:00 PM
+                                <div class="booking-status">Almost Full</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('PVR Phoenix', '10:30 PM')">
+                                10:30 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theater 2 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">INOX - Forum Mall</div>
+                                <div class="theater-info">IMAX, Dolby Vision</div>
+                            </div>
+                            <div class="theater-info">3.2 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('INOX Forum', '10:15 AM')">
+                                10:15 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('INOX Forum', '11:00 AM')">
+                                11:00 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('INOX Forum', '2:30 PM')">
+                                2:30 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn fast-filling" onclick="selectTheaterShow('INOX Forum', '6:00 PM')">
+                                6:00 PM
+                                <div class="booking-status">Fast Filling</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('INOX Forum', '9:30 PM')">
+                                9:30 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theater 3 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">Cinepolis - Central Mall</div>
+                                <div class="theater-info">Premium Seating, Cafe</div>
+                            </div>
+                            <div class="theater-info">1.8 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('Cinepolis Central', '11:30 AM')">
+                                11:30 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Cinepolis Central', '12:00 PM')">
+                                12:00 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Cinepolis Central', '3:15 PM')">
+                                3:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn almost-full" onclick="selectTheaterShow('Cinepolis Central', '6:45 PM')">
+                                6:45 PM
+                                <div class="booking-status">Almost Full</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Cinepolis Central', '10:15 PM')">
+                                10:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theater 4 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">Miraj Cinemas - Gopalan Mall</div>
+                                <div class="theater-info">Luxury Recliners, 3D</div>
+                            </div>
+                            <div class="theater-info">4.1 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('Miraj Gopalan', '10:45 AM')">
+                                10:45 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Miraj Gopalan', '1:45 PM')">
+                                1:45 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn fast-filling" onclick="selectTheaterShow('Miraj Gopalan', '4:45 PM')">
+                                4:45 PM
+                                <div class="booking-status">Fast Filling</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Miraj Gopalan', '7:45 PM')">
+                                7:45 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Miraj Gopalan', '10:45 PM')">
+                                10:45 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theater 5 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">Carnival Cinemas - GT World Mall</div>
+                                <div class="theater-info">IMAX, Dolby Atmos</div>
+                            </div>
+                            <div class="theater-info">5.2 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('Carnival GT', '9:00 AM')">
+                                9:00 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Carnival GT', '12:15 PM')">
+                                12:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Carnival GT', '3:30 PM')">
+                                3:30 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn almost-full" onclick="selectTheaterShow('Carnival GT', '6:30 PM')">
+                                6:30 PM
+                                <div class="booking-status">Almost Full</div>
+                            </button>
+                            <button class="showtime-btn fast-filling" onclick="selectTheaterShow('Carnival GT', '9:45 PM')">
+                                9:45 PM
+                                <div class="booking-status">Fast Filling</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Theater 6 -->
+                    <div class="theater-section">
+                        <div class="theater-header">
+                            <div>
+                                <div class="theater-name">Multiplex - Brigade Road</div>
+                                <div class="theater-info">Classic Cinema, Affordable</div>
+                            </div>
+                            <div class="theater-info">6.8 km away</div>
+                        </div>
+                        <div class="showtime-grid">
+                            <button class="showtime-btn" onclick="selectTheaterShow('Multiplex Brigade', '11:15 AM')">
+                                11:15 AM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Multiplex Brigade', '2:15 PM')">
+                                2:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Multiplex Brigade', '5:15 PM')">
+                                5:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                            <button class="showtime-btn" onclick="selectTheaterShow('Multiplex Brigade', '8:15 PM')">
+                                8:15 PM
+                                <div class="booking-status" style="color: #28a745;">Available</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="reviews-section">
+                    <h3>User Reviews</h3>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-name">Raj Kumar</div>
+                            <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <p>"Absolutely incredible! The best Marvel movie ever made. The emotional journey and epic battles were mind-blowing."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-name">Priya Singh</div>
+                            <div class="review-rating">⭐⭐⭐⭐</div>
+                        </div>
+                        <p>"Great conclusion to the Infinity Saga. Some parts were slow but the ending made up for everything."</p>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-name">Amit Patel</div>
+                            <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <p>"Perfect blend of action, emotion, and fan service. A masterpiece that every Marvel fan must watch!"</p>
+                    </div>
+                </div>
+
+                <!-- Cast & Crew Section -->
+                <div class="cast-section">
+                    <h3>Cast & Crew</h3>
+                    <div class="cast-grid">
+                        <div class="cast-card">
+                            <div class="cast-photo">👨</div>
+                            <div><strong>Robert Downey Jr.</strong></div>
+                            <div>Iron Man</div>
+                        </div>
+                        <div class="cast-card">
+                            <div class="cast-photo">👨</div>
+                            <div><strong>Chris Evans</strong></div>
+                            <div>Captain America</div>
+                        </div>
+                        <div class="cast-card">
+                            <div class="cast-photo">👨</div>
+                            <div><strong>Chris Hemsworth</strong></div>
+                            <div>Thor</div>
+                        </div>
+                        <div class="cast-card">
+                            <div class="cast-photo">👩</div>
+                            <div><strong>Scarlett Johansson</strong></div>
+                            <div>Black Widow</div>
+                        </div>
+                        <div class="cast-card">
+                            <div class="cast-photo">👨</div>
+                            <div><strong>Anthony Russo</strong></div>
+                            <div>Director</div>
+                        </div>
+                        <div class="cast-card">
+                            <div class="cast-photo">👨</div>
+                            <div><strong>Joe Russo</strong></div>
+                            <div>Director</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seat Selection Page -->
+    <div id="seatSelection" class="page">
+        <div class="container">
+            <div class="seat-selection-header">
+                <div class="theater-details">
+                    <div>
+                        <h2 id="selectedTheater">PVR Cinemas - Phoenix Mall</h2>
+                        <p id="selectedShowtime">Today, 7:00 PM</p>
+                    </div>
+                    <div>
+                        <h3 id="selectedMovie">Avengers: Endgame</h3>
+                        <p>Screen 1</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen"></div>
+            
+            <div class="seats-container">
+                <div class="seat-row">
+                    <span style="margin-right: 1rem; font-weight: bold;">A</span>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A1">1</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A2">2</div>
+                    <div class="seat booked" data-seat="A3">3</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A4">4</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A5">5</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A6">6</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A7">7</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="A8">8</div>
+                </div>
+                <div class="seat-row">
+                    <span style="margin-right: 1rem; font-weight: bold;">B</span>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B1">1</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B2">2</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B3">3</div>
+                    <div class="seat booked" data-seat="B4">4</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B5">5</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B6">6</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B7">7</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="B8">8</div>
+                </div>
+                <div class="seat-row">
+                    <span style="margin-right: 1rem; font-weight: bold;">C</span>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C1">1</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C2">2</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C3">3</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C4">4</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C5">5</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C6">6</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C7">7</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="C8">8</div>
+                </div>
+                <div class="seat-row">
+                    <span style="margin-right: 1rem; font-weight: bold;">D</span>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D1">1</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D2">2</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D3">3</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D4">4</div>
+                    <div class="seat booked" data-seat="D5">5</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D6">6</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D7">7</div>
+                    <div class="seat" onclick="toggleSeat(this)" data-seat="D8">8</div>
+                </div>
+            </div>
+            
+            <div class="seat-legend">
+                <div class="legend-item">
+                    <div class="legend-seat" style="background: #e9ecef; border: 2px solid #dee2e6;"></div>
+                    <span>Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-seat" style="background: #ff6b35;"></div>
+                    <span>Selected</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-seat" style="background: #6c757d;"></div>
+                    <span>Booked</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; background: #fff; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <p><strong>Selected Seats:</strong> <span id="selectedSeats">None</span></p>
+                <p><strong>Total Amount:</strong> ₹<span id="totalPrice">0</span></p>
+                <button class="btn" onclick="proceedToPayment()" style="margin-top: 1rem; width: auto; padding: 1rem 2rem;">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Page -->
+    <div id="payment" class="page">
+        <div class="container">
+            <div class="payment-container">
+                <!-- Booking Summary -->
+                <div class="booking-summary">
+                    <h3>Booking Summary</h3>
+                    <div class="summary-item">
+                        <span><strong>Movie:</strong></span>
+                        <span id="paymentMovie">Avengers: Endgame</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><strong>Theater:</strong></span>
+                        <span id="paymentTheater">PVR Phoenix</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><strong>Date & Time:</strong></span>
+                        <span id="paymentDateTime">Today, 7:00 PM</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><strong>Seats:</strong></span>
+                        <span id="paymentSeats">A1, A2</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><strong>Ticket Price:</strong></span>
+                        <span>₹<span id="ticketPrice">400</span></span>
+                    </div>
+
+                    <!-- Add-ons -->
+                    <div class="add-ons">
+                        <h4>Add-ons</h4>
+                        <div class="add-on-item">
+                            <div>
+                                <strong>Popcorn Combo</strong>
+                                <div style="color: #666; font-size: 0.9rem;">Large Popcorn + 2 Cokes</div>
+                            </div>
+                            <div class="add-on-controls">
+                                <span>₹250</span>
+                                <button class="qty-btn" onclick="changeQty('popcorn', -1)">-</button>
+                                <span id="popcornQty">0</span>
+                                <button class="qty-btn" onclick="changeQty('popcorn', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="add-on-item">
+                            <div>
+                                <strong>Nachos & Cheese</strong>
+                                <div style="color: #666; font-size: 0.9rem;">Crispy nachos with cheese dip</div>
+                            </div>
+                            <div class="add-on-controls">
+                                <span>₹180</span>
+                                <button class="qty-btn" onclick="changeQty('nachos', -1)">-</button>
+                                <span id="nachosQty">0</span>
+                                <button class="qty-btn" onclick="changeQty('nachos', 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-item" style="font-size: 1.2rem; font-weight: bold; color: #ff6b35;">
+                        <span><strong>Total Amount:</strong></span>
+                        <span>₹<span id="grandTotal">400</span></span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <h3>Payment Method</h3>
+                    
+                    <div class="payment-option active" onclick="selectPaymentMethod('card')">
+                        <input type="radio" name="payment" value="card" checked>
+                        <div>
+                            <strong>💳 Credit/Debit Card</strong>
+                            <div style="color: #666; font-size: 0.9rem;">Visa, MasterCard, Rupay</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPaymentMethod('upi')">
+                        <input type="radio" name="payment" value="upi">
+                        <div>
+                            <strong>📱 UPI Payment</strong>
+                            <div style="color: #666; font-size: 0.9rem;">GooglePay, PhonePe, Paytm</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPaymentMethod('netbanking')">
+                        <input type="radio" name="payment" value="netbanking">
+                        <div>
+                            <strong>🏦 Net Banking</strong>
+                            <div style="color: #666; font-size: 0.9rem;">All major banks supported</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPaymentMethod('wallet')">
+                        <input type="radio" name="payment" value="wallet">
+                        <div>
+                            <strong>👛 Digital Wallet</strong>
+                            <div style="color: #666; font-size: 0.9rem;">Paytm, MobiKwik, Freecharge</div>
+                        </div>
+                    </div>
+
+                    <!-- Card Form -->
+                    <div class="payment-form" id="cardForm">
+                        <div class="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI Form -->
+                    <div class="payment-form" id="upiForm" style="display: none;">
+                        <div class="form-group">
+                            <label>UPI ID</label>
+                            <input type="text" placeholder="yourname@upi" required>
+                        </div>
+                        <p style="text-align: center; margin: 1rem 0;">Or scan QR code with your UPI app</p>
+                        <div style="text-align: center;">
+                            <div style="width: 100px; height: 100px; background: #333; margin: 0 auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff;">QR</div>
+                        </div>
+                    </div>
+
+                    <!-- Net Banking Form -->
+                    <div class="payment-form" id="netbankingForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Select Your Bank</label>
+                            <select style="width: 100%; padding: 0.8rem; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px;">
+                                <option>State Bank of India</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                                <option>Axis Bank</option>
+                                <option>Punjab National Bank</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Wallet Form -->
+                    <div class="payment-form" id="walletForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="tel" placeholder="+91 9876543210" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Select Wallet</label>
+                            <select style="width: 100%; padding: 0.8rem; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px;">
+                                <option>Paytm</option>
+                                <option>MobiKwik</option>
+                                <option>Freecharge</option>
+                                <option>Amazon Pay</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="processPayment()" style="margin-top: 2rem;">Pay Now ₹<span id="payButton">400</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Page -->
+    <div id="confirmation" class="page">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="success-icon">✅</div>
+                <h2>Booking Confirmed!</h2>
+                <p>Your movie tickets have been booked successfully</p>
+                
+                <div class="qr-code">
+                    QR CODE
+                </div>
+                
+                <div class="ticket-info">
+                    <h3>Ticket Details</h3>
+                    <p><strong>Booking ID:</strong> CM001234</p>
+                    <p><strong>Movie:</strong> <span id="confirmMovie">Avengers: Endgame</span></p>
+                    <p><strong>Theater:</strong> <span id="confirmTheater">PVR Phoenix</span></p>
+                    <p><strong>Date & Time:</strong> <span id="confirmDateTime">Today, 7:00 PM</span></p>
+                    <p><strong>Seats:</strong> <span id="confirmSeats">A1, A2</span></p>
+                    <p><strong>Total Paid:</strong> ₹<span id="confirmTotal">400</span></p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="downloadTicket()" style="width: auto; padding: 1rem 2rem;">📱 Download Ticket</button>
+                    <button class="btn" onclick="showPage('home')" style="width: auto; padding: 1rem 2rem;">🏠 Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedSeats = [];
+        let seatPrice = 200;
+        let currentMovie = 'Avengers: Endgame';
+        let currentTheater = '';
+        let currentTime = '';
+        let addOns = {
+            popcorn: { price: 250, qty: 0 },
+            nachos: { price: 180, qty: 0 }
+        };
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Auth Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('signupForm').style.display = 'block';
+            }
+        }
+
+        // Handle Login/Signup
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Login successful!');
+            showPage('home');
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Account created successfully!');
+            showPage('home');
+        });
+
+        // Movie Details
+        function showMovieDetail(movieTitle) {
+            currentMovie = movieTitle;
+            document.getElementById('detailTitle').textContent = movieTitle;
+            
+            const movieData = {
+                'Avengers: Endgame': { poster: '🦸', synopsis: 'The Avengers assemble once more to reverse the damage caused by Thanos and restore balance to the universe.' },
+                'The Lion King': { poster: '🦁', synopsis: 'A young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.' },
+                'Joker': { poster: '🃏', synopsis: 'A failed comedian begins his transformation into the criminal mastermind known as the Joker.' },
+                'Spider-Man': { poster: '🕷️', synopsis: 'A teenager gains spider-like abilities and becomes a superhero to protect New York City.' },
+                'Fast X': { poster: '🏎️', synopsis: 'Dom Toretto and his family must face the most lethal opponent they have ever encountered.' },
+                'Top Gun: Maverick': { poster: '✈️', synopsis: 'After thirty years, Maverick is still pushing the envelope as a top naval aviator.' },
+                'Guardians of the Galaxy 3': { poster: '🚀', synopsis: 'The Guardians embark on their final mission to save the galaxy and protect one of their own.' }
+            };
+            
+            if (movieData[movieTitle]) {
+                document.getElementById('detailPoster').textContent = movieData[movieTitle].poster;
+                document.getElementById('detailSynopsis').textContent = movieData[movieTitle].synopsis;
+            }
+            
+            showPage('movieDetail');
+        }
+
+        // Show booking section
+        function showBookingSection() {
+            document.getElementById('bookingSection').style.display = 'block';
+            document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Date selection
+        function selectDate(dateBtn) {
+            document.querySelectorAll('.date-btn').forEach(btn => btn.classList.remove('active'));
+            dateBtn.classList.add('active');
+        }
+
+        // Select Theater and Show
+        function selectTheaterShow(theater, time) {
+            currentTheater = theater;
+            currentTime = time;
+            
+            document.getElementById('selectedTheater').textContent = theater;
+            document.getElementById('selectedShowtime').textContent = 'Today, ' + time;
+            document.getElementById('selectedMovie').textContent = currentMovie;
+            
+            showPage('seatSelection');
+        }
+
+        // Seat Selection
+        function toggleSeat(seat) {
+            if (seat.classList.contains('booked')) return;
+            
+            seat.classList.toggle('selected');
+            updateSelectedSeats();
+        }
+
+        function updateSelectedSeats() {
+            const seats = document.querySelectorAll('.seat.selected');
+            selectedSeats = Array.from(seats).map(seat => seat.dataset.seat);
+            
+            document.getElementById('selectedSeats').textContent = selectedSeats.length ? selectedSeats.join(', ') : 'None';
+            document.getElementById('totalPrice').textContent = selectedSeats.length * seatPrice;
+        }
+
+        // FIXED: Proceed to Payment function that updates payment summary
+        function proceedToPayment() {
+            if (selectedSeats.length === 0) {
+                alert('Please select at least one seat!');
+                return;
+            }
+            
+            // Update payment summary with current booking details
+            document.getElementById('paymentMovie').textContent = currentMovie;
+            document.getElementById('paymentTheater').textContent = currentTheater;
+            document.getElementById('paymentDateTime').textContent = 'Today, ' + currentTime;
+            document.getElementById('paymentSeats').textContent = selectedSeats.join(', ');
+            document.getElementById('ticketPrice').textContent = selectedSeats.length * seatPrice;
+            
+            // Update grand total
+            updateGrandTotal();
+            
+            showPage('payment');
+        }
+
+        // Add-on quantity management
+        function changeQty(item, change) {
+            addOns[item].qty = Math.max(0, addOns[item].qty + change);
+            document.getElementById(item + 'Qty').textContent = addOns[item].qty;
+            updateGrandTotal();
+        }
+
+        // FIXED: Update grand total function
+        function updateGrandTotal() {
+            let total = selectedSeats.length * seatPrice;
+            total += addOns.popcorn.price * addOns.popcorn.qty;
+            total += addOns.nachos.price * addOns.nachos.qty;
+            
+            document.getElementById('grandTotal').textContent = total;
+            document.getElementById('payButton').textContent = total;
+        }
+
+        // Payment method selection
+        function selectPaymentMethod(method) {
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Hide all forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            // Show selected form
+            document.getElementById(method + 'Form').style.display = 'block';
+        }
+
+        // Payment Processing
+        function processPayment() {
+            if (selectedSeats.length === 0) {
+                alert('Please select seats first!');
+                return;
+            }
+            
+            // Update confirmation page
+            document.getElementById('confirmMovie').textContent = currentMovie;
+            document.getElementById('confirmTheater').textContent = currentTheater;
+            document.getElementById('confirmDateTime').textContent = 'Today, ' + currentTime;
+            document.getElementById('confirmSeats').textContent = selectedSeats.join(', ');
+            document.getElementById('confirmTotal').textContent = document.getElementById('grandTotal').textContent;
+            
+            alert('Payment successful!');
+            showPage('confirmation');
+        }
+
+        // FIXED: Download Ticket Function
+        function downloadTicket() {
+            // Create ticket content
+            const ticketContent = `
+🎬 CINEMAMAX TICKET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 BOOKING ID: CM001234
+🎬 MOVIE: ${currentMovie}
+🏢 THEATER: ${currentTheater}
+📅 DATE & TIME: Today, ${currentTime}
+💺 SEATS: ${selectedSeats.join(', ')}
+💰 TOTAL PAID: ₹${document.getElementById('grandTotal').textContent}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Thank you for choosing CinemaMax!
+Present this ticket at the theater entrance.
+
+Generated on: ${new Date().toLocaleString()}
+            `;
+
+            // Create and download the file
+            const blob = new Blob([ticketContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CinemaMax_Ticket_CM001234_${currentMovie.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Ticket downloaded successfully! Check your Downloads folder.');
+        }
+
+        // Movie filtering functionality
+        function filterMovies(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show/hide movie sections based on category
+            const sections = {
+                'all': ['now-showing-section', 'coming-soon-section', 'streaming-section'],
+                'now-showing': ['now-showing-section'],
+                'coming-soon': ['coming-soon-section'],
+                'streaming': ['streaming-section'],
+                'imax': ['now-showing-section', 'coming-soon-section']
+            };
+
+            // Hide all sections first
+            document.querySelectorAll('.movie-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show relevant sections
+            if (sections[category]) {
+                sections[category].forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (section) section.style.display = 'block';
+                });
+            }
+
+            // Special handling for IMAX filter
+            if (category === 'imax') {
+                document.querySelectorAll('.movie-card').forEach(card => {
+                    if (card.classList.contains('imax')) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            } else if (category !== 'all') {
+                // For specific categories, show only matching cards
+                document.querySelectorAll('.movie-card').forEach(card => {
+                    if (card.classList.contains(category)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            } else {
+                // Reset all movie cards visibility for 'all' category
+                document.querySelectorAll('.movie-card').forEach(card => {
+                    card.style.display = 'block';
+                });
+            }
+        }
+
+        // Search functionality
+        function searchMovies() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            document.querySelectorAll('.movie-card').forEach(card => {
+                const title = card.querySelector('.movie-title').textContent.toLowerCase();
+                const genre = card.querySelector('.movie-genre').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || genre.includes(searchTerm) || searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize event listeners when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search input event
+            document.querySelector('.search-input').addEventListener('input', searchMovies);
+            
+            // Search button event
+            document.querySelector('.search-btn').addEventListener('click', searchMovies);
+        });
+    </script>
+</body>
+</html>
